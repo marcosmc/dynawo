@@ -37,6 +37,7 @@
 #include "DYNFileSystemUtils.h"
 #include "DYNExecUtils.h"
 #define DYNTIMERS_INSTANCE  // this should be defined only once in main source before header inclusion
+#define DYNTRACE_INSTANCE  // this should be defined only once in main source before header inclusion
 #include "DYNTimer.h"
 
 using std::string;
