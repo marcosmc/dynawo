@@ -26,9 +26,7 @@
 #include <dlfcn.h>
 
 #include <boost/version.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
-#include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/attributes.hpp>
 #include <boost/log/trivial.hpp>
@@ -80,9 +78,15 @@ BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", SeverityLevel)
 BOOST_LOG_ATTRIBUTE_KEYWORD(tag_attr, "Tag", std::string)
 #pragma GCC diagnostic error "-Wmissing-field-initializers"
 
+Trace::Trace() {
+}
+
+Trace::~Trace() {
+}
+
 Trace&
 Trace::getInstance() {
-  static Trace INSTANCE;  ///< the quasi singleton !
+  static Trace INSTANCE;  ///< the singleton !
   return INSTANCE;
 }
 
@@ -107,7 +111,6 @@ Trace::getInstance_() {
   if (!pTrace) {
     pTrace = &(getInstance());
   }
-
   return *pTrace;
 }
 
@@ -161,6 +164,8 @@ void Trace::addAppenders_(std::vector<TraceAppender>& appenders) {
   // remove old appenders (console_log)
   resetCustomAppenders_();
 
+  coreLogger_ = logging::core::get();
+
   std::stringstream s;
   // Add appender
   for (unsigned int i = 0; i < appenders.size(); ++i) {
@@ -191,7 +196,7 @@ void Trace::addAppenders_(std::vector<TraceAppender>& appenders) {
     } else {
       sink->set_filter(severity >= appenders[i].getLvlFilter() && tag_attr == appenders[i].getTag());
     }
-    logging::core::get()->add_sink(sink);
+    coreLogger_->add_sink(sink);
     sinks_.push_back(sink);
   }
 
@@ -204,8 +209,7 @@ void Trace::resetCustomAppenders() {
 }
 
 void Trace::resetCustomAppenders_() {
-  vector< boost::shared_ptr<file_sink> >::iterator itSinks;
-  for (itSinks = sinks_.begin(); itSinks != sinks_.end(); ++itSinks) {
+  for (vector< boost::shared_ptr<file_sink> >::iterator itSinks = sinks_.begin(); itSinks != sinks_.end(); ++itSinks) {
     logging::core::get()->remove_sink(*itSinks);
   }
   sinks_.clear();
@@ -247,6 +251,10 @@ void Trace::log_(SeverityLevel slv, const std::string& tag, const std::string& m
 
   if (tag != "")
     slg.add_attribute("Tag", attrs::constant< std::string >(tag));
+
+  for (vector< boost::shared_ptr<file_sink> >::iterator itSinks = sinks_.begin(); itSinks != sinks_.end(); ++itSinks) {
+    logging::core::get()->add_sink(*itSinks);
+  }
 
   BOOST_LOG_SEV(slg, slv) << message;
 }

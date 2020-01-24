@@ -64,11 +64,8 @@ set(COMMON_SOURCES
   DYNExecUtils.cpp
   DYNEnumUtils.cpp
   DYNFileSystemUtils.cpp
-  DYNTrace.cpp
-  DYNTraceStream.cpp
   DYNMessage.cpp
   DYNMessageTimeline.cpp
-  DYNIoDico.cpp
   DYNGraph.cpp
   DYNParameter.cpp
   DYNSparseMatrix.cpp
@@ -84,15 +81,12 @@ set(COMMON_INCLUDE_HEADERS
   DYNExecUtils.h
   DYNEnumUtils.h
   DYNFileSystemUtils.h
-  DYNTrace.h
-  DYNTraceStream.h
   DYNGraph.h
   DYNMessage.h
   DYNMessage.hpp
   DYNMessageTimeline.h
   DYNMessageTimeline.hpp
   DYNMacrosMessage.h
-  DYNIoDico.h
   DYNParameter.h
   DYNSparseMatrix.h
   DYNParameter.hpp
@@ -101,11 +95,17 @@ set(COMMON_INCLUDE_HEADERS
   )
 
 set(UTIL_SOURCES
+  DYNIoDico.cpp
   DYNTimer.cpp
+  DYNTrace.cpp
+  DYNTraceStream.cpp
   )
 
 set(UTIL_INCLUDE_HEADERS
+  DYNIoDico.h
   DYNTimer.h
+  DYNTrace.h
+  DYNTraceStream.h
   )
 
 add_library(dynawo_Interface INTERFACE)
@@ -136,7 +136,7 @@ add_library(dynawo_Common ${LIBRARY_TYPE} ${COMMON_SOURCES})
 
 add_dependencies(dynawo_Common create_keys_files)
 
-target_link_libraries(dynawo_Common dynawo_Interface)
+target_link_libraries(dynawo_Common dynawo_Interface ${CMAKE_DL_LIBS})
 
 set_target_properties(dynawo_Common PROPERTIES VERSION ${COMMON_VERSION_STRING}
                                              SOVERSION ${COMMON_VERSION_MAJOR})

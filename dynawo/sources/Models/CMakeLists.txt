@@ -178,10 +178,11 @@ macro(COMPILE_PREASSEMBLED_MODEL
         COMMAND
           ${CMAKE_COMMAND} -E echo "set DYNAWO_LIBXML_HOME=${LIBXML_HOME}" >> ${CMAKE_CURRENT_BINARY_DIR}/wrapper.bat
         COMMAND
+          ${CMAKE_COMMAND} -E echo "${runtime_PATH}" >> ${CMAKE_CURRENT_BINARY_DIR}/wrapper.bat
+        COMMAND
           ${CMAKE_COMMAND} -E echo "%*" >> ${CMAKE_CURRENT_BINARY_DIR}/wrapper.bat
         COMMAND
             ${CMAKE_COMMAND} -E env
-              "${runtime_PATH}"
               cmd /c ${CMAKE_CURRENT_BINARY_DIR}/wrapper.bat $<TARGET_FILE:generate-preassembled> --model-list ${CMAKE_CURRENT_SOURCE_DIR}/${PREASSEMBLED_MODEL} --output-dir ${CMAKE_CURRENT_BINARY_DIR} --remove-model-files true >> ${MODEL_NAME}.log 2>&1 ||
               (echo "*** [${MODEL_NAME}] Error : for more information please see file ${CMAKE_CURRENT_BINARY_DIR}/${MODEL_NAME}.log" && exit -1)
         COMMENT "Building ${MODEL_NAME}"

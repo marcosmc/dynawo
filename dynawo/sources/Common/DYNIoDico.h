@@ -24,7 +24,7 @@
 #include <map>
 #include <vector>
 #include <boost/shared_ptr.hpp>
-
+#include <iostream>
 
 namespace DYN {
 
@@ -91,23 +91,12 @@ class IoDicos {
   ~IoDicos() { }
 
   /**
-   * @brief add a dictionary to the IoDicos instance
-   *
-   * @param name name of the dictionary
-   * @param baseName base name of the file to read to create the dictionary
-   * @param locale locale of the dictionary
-   *
-   * @note the full name of the file is: @b basename+"_"+locale+".dic"
-   */
-  void addDico(const std::string & name, const std::string & baseName, const std::string& locale = "en_GB");
-
-  /**
    * @brief add a list of dictionaries to the IoDicos instance
    *
    * @param dictionariesMappingFile name of the dictionaries mapping file (format baseName = name)
    * @param locale locale of the dictionary
    */
-  void addDicos(const std::string & dictionariesMappingFile, const std::string& locale = "en_GB");
+  static void addDicos(const std::string& dictionariesMappingFile, const std::string& locale = "en_GB");
 
   /**
    * @brief try to find a dictionary with the name @b dicoName
@@ -130,14 +119,14 @@ class IoDicos {
    *
    * @return the IoDicos instance created
    */
-  static boost::shared_ptr<IoDicos> getInstance();
+  static IoDicos& getInstance();
 
   /**
    * @brief add path to the paths where dictionaries are researched
    *
    * @param path path to add
    */
-  void addPath(const std::string & path);
+  static void addPath(const std::string& path);
 
  private:
   /**
@@ -156,6 +145,55 @@ class IoDicos {
    */
   IoDicos& operator=(const IoDicos&);
 
+    /**
+   * @brief add a dictionary to the IoDicos instance
+   *
+   * @param name name of the dictionary
+   * @param baseName base name of the file to read to create the dictionary
+   * @param locale locale of the dictionary
+   *
+   * @note the full name of the file is: @b basename+"_"+locale+".dic"
+   */
+  void addDico(const std::string& name, const std::string & baseName, const std::string& locale = "en_GB");
+
+  /**
+   * @brief add a list of dictionaries to the IoDicos instance
+   *
+   * @param dictionariesMappingFile name of the dictionaries mapping file (format baseName = name)
+   * @param locale locale of the dictionary
+   */
+  void addDicos_(const std::string& dictionariesMappingFile, const std::string& locale = "en_GB");
+
+  /**
+   * @brief try to find a dictionary with the name @b dicoName
+   *
+   * @param dicoName name of the dictionary to return
+   *
+   * @return return the dictionary with the desired name
+   */
+  boost::shared_ptr<IoDico> getIoDico_(const std::string & dicoName);
+
+  /**
+   * @brief check if a dictionary exist thanks to its name
+   * @param dicoName name of the dictionary to find
+   * @return @b true if the dictionary exists, @b false else
+   */
+  bool hasIoDico_(const std::string & dicoName);
+
+  /**
+   * @brief add path to the paths where dictionaries are researched
+   *
+   * @param path path to add
+   */
+  void addPath_(const std::string& path);
+
+  /**
+   * @brief Initialize the IoDicos single instance if there is no instance, otherwise return the instance
+   *
+   * @return the IoDicos instance created
+   */
+  static IoDicos& getInstance_();
+
   /**
    * @brief find the @b fileName in all the paths
    *
@@ -169,6 +207,17 @@ class IoDicos {
   std::vector<std::string> paths_;  ///< path where dictionnaries are researched
   std::map<std::string, boost::shared_ptr<IoDico> > dicos_;  ///< map association between dictionary and their name
 };
+
+#ifdef DYNIODICOS_INSTANCE
+/**
+ * @brief get the unique instance of Trace in the executable
+ *
+ * @return the unique instance
+ */
+extern "C" IoDicos& getIoDicosInstance() {
+  return DYN::IoDicos::getInstance();
+}
+#endif
 
 }  // namespace DYN
 #endif  // COMMON_DYNIODICO_H_

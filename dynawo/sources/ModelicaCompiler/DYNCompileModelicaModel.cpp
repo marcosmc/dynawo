@@ -22,6 +22,10 @@
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
+#define DYNIODICOS_INSTANCE  // this should be defined only once in main source before header inclusion
+#define DYNTRACE_INSTANCE  // this should be defined only once in main source before header inclusion
+#define DYNTIMERS_INSTANCE  // this should be defined only once in main source before header inclusion
+
 #include "DYNIoDico.h"
 #include "DYNTrace.h"
 #include "DYNMacrosMessage.h"
@@ -132,9 +136,8 @@ int main(int argc, char ** argv) {
 
   // Launch the compile of the model
   try {
-    boost::shared_ptr<DYN::IoDicos> dicos = DYN::IoDicos::getInstance();
-    dicos->addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
-    dicos->addDicos(getMandatoryEnvVar("DYNAWO_DICTIONARIES"));
+    DYN::IoDicos::addPath(getMandatoryEnvVar("DYNAWO_RESOURCES_DIR"));
+    DYN::IoDicos::addDicos(getMandatoryEnvVar("DYNAWO_DICTIONARIES"));
 
     // Create .c, .h and .xml files from .mo
     bool withInitFile = false;

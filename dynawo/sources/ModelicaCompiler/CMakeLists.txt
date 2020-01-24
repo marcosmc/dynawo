@@ -17,7 +17,7 @@ add_executable(compileModelicaModel ${COMPILER_MODELICA_OMC_SOURCES})
 
 target_link_libraries(compileModelicaModel
     dynawo_Common
-    ${CMAKE_DL_LIBS}
+    dynawo_Util
     )
 
 if(APPLE)

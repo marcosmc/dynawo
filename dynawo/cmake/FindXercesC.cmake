@@ -117,7 +117,7 @@ if (XercesC_INCLUDE_DIR AND XercesC_LIBRARY)
     "  return 0;\n"
   "}\n")
   try_compile(TEST_XERCESC ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/xercesc/Test SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/xercesc/Test/testXerces.cpp
-    LINK_LIBRARIES ${XercesC_LIBRARY} pthread
+    LINK_LIBRARIES ${XercesC_LIBRARY} $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:pthread>
     CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${XercesC_INCLUDE_DIR}"
       "-DCOMPILE_DEFINITIONS=${CXX_STDFLAG}")
 

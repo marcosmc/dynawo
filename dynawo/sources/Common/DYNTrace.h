@@ -26,7 +26,10 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
+#include <boost/shared_ptr.hpp>
+#include <boost/log/core.hpp>
 #include <boost/log/sinks.hpp>
 
 #include "DYNTraceStream.h"
@@ -189,6 +192,16 @@ class Trace {
     bool showTimeStamp_;  ///< @b true if the timestamp of the log should be printed
     std::string timeStampFormat_;  ///< format of the timestamp information , "" if no time to print
   };
+
+  /**
+     * @brief Trace constructor
+     */
+  Trace();
+
+  /**
+   * @brief Trace destructor
+   */
+  ~Trace();
 
   /**
  * @brief get the unique instance of Timers in current memory space
@@ -357,6 +370,7 @@ class Trace {
 
   std::vector< boost::shared_ptr<file_sink> > sinks_;  ///<  vector of file sink
   std::vector< boost::shared_ptr<text_sink> > originalSinks_;  ///< vector of text sink
+  boost::shared_ptr<boost::log::core> coreLogger_;  ///< vector of text sink
 };
 
 }  // namespace DYN
